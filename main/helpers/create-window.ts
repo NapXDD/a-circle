@@ -73,11 +73,15 @@ export const createWindow = (
   const win = new BrowserWindow({
     ...state,
     ...options,
+    resizable: false,
+    useContentSize: true,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
       ...options.webPreferences,
     },
+    frame: false,
+    transparent: true,
   });
 
   win.on("close", saveState);

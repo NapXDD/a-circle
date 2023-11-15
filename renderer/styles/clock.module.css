@@ -1,0 +1,16 @@
+.clock_container {
+  width: 500px;
+  height: 500px;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-app-region: drag;
+}
+
+.clock_frame {
+  width: 450px;
+  height: 450px;
+  background-color: white;
+  border-radius: 50%;
+}
