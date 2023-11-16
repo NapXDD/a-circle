@@ -2,10 +2,15 @@
   width: 500px;
   height: 500px;
   background-color: black;
+  border-radius: 50%;
+}
+
+.frame_container {
+  width: 500px;
+  height: 500px;
   display: flex;
   justify-content: center;
   align-items: center;
-  -webkit-app-region: drag;
 }
 
 .clock_frame {
@@ -13,4 +18,5 @@
   height: 450px;
   background-color: white;
   border-radius: 50%;
+  position: absolute;
 }

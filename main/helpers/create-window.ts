@@ -3,8 +3,12 @@ import {
   BrowserWindow,
   BrowserWindowConstructorOptions,
   Rectangle,
+  ipcMain,
 } from "electron";
 import Store from "electron-store";
+
+let earlyX: number, earlyY: number;
+let newX: number, newY: number;
 
 export const createWindow = (
   windowName: string,
@@ -18,6 +22,13 @@ export const createWindow = (
     height: options.height,
   };
   let state = {};
+  let display = screen.getPrimaryDisplay();
+  let widtho = display.bounds.width;
+  let heighto = display.bounds.height;
+  let wind_height = 330;
+  let wind_width = 376;
+  let minusX = 608;
+  let minusY = 376;
 
   const restore = () => store.get(key, defaultSize);
 
@@ -75,6 +86,7 @@ export const createWindow = (
     ...options,
     resizable: false,
     useContentSize: true,
+    focusable: false,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -82,6 +94,56 @@ export const createWindow = (
     },
     frame: false,
     transparent: true,
+  });
+
+  earlyX = widtho - minusX;
+  earlyY = heighto - minusY;
+
+  win.setBounds({
+    width: win.getSize()[0],
+    height: win.getSize()[1],
+    x: earlyX,
+    y: earlyY,
+  });
+
+  win.setAspectRatio(16 / 9);
+
+  ipcMain.handle("setnewpos", async (event, args: { x: number; y: number }) => {
+    win.setBounds({
+      width: wind_width || win.getSize()[0],
+      height: wind_height,
+      x: earlyX + args.x,
+      y: earlyY + args.y,
+    });
+    newX = earlyX + args.x;
+    newY = earlyY + args.y;
+    if (wind_width === 0) {
+      wind_width = Math.ceil((wind_height * 16) / 9);
+    }
+  });
+
+  ipcMain.handle(
+    "settlenewpos",
+    async (event, args: { x: number; y: number }) => {
+      earlyX += earlyX + args.x;
+      earlyY += earlyY + args.y;
+      newX = earlyX;
+      newY = earlyY;
+    }
+  );
+
+  ipcMain.on("settlemergency", () => {
+    earlyX = newX;
+    earlyY = newY;
+  });
+
+  win.on("will-resize", (event, newBounds) => {
+    earlyX = newBounds.x;
+    earlyY = newBounds.y;
+    newX = earlyX;
+    newY = earlyY;
+    wind_height = newBounds.height;
+    wind_width = newBounds.width;
   });
 
   win.on("close", saveState);

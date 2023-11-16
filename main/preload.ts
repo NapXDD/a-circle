@@ -6,6 +6,9 @@ const handler = {
   send(channel: string, value: unknown) {
     ipcRenderer.send(channel, value);
   },
+  sendv2(channel: string) {
+    ipcRenderer.send(channel);
+  },
   toggle(channel: string, value1: unknown, value2: unknown) {
     if (isToggle) {
       ipcRenderer.send(channel, value1);
@@ -23,6 +26,9 @@ const handler = {
     return () => {
       ipcRenderer.removeListener(channel, subscription);
     };
+  },
+  invoke(channel: string, value: unknown) {
+    ipcRenderer.invoke(channel, value);
   },
 };
 
