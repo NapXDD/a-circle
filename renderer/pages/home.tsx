@@ -2,8 +2,6 @@
 
 import React, { MouseEventHandler, useEffect } from "react";
 import s from "../styles/clock.module.css";
-import Link from "next/link";
-import { ipcRenderer } from "electron";
 
 export default function Home() {
   useEffect(() => {
@@ -38,9 +36,9 @@ export default function Home() {
       }
     });
 
-    function dragMouse(e) {
+    function dragMouse(e: MouseEvent) {
       if (is_mousedownvid) {
-        e = e || window.event;
+        e = e;
         e.preventDefault();
         window.ipc.invoke("setnewpos", {
           x: e.screenX - earlymouseX,

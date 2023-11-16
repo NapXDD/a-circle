@@ -25,10 +25,10 @@ export const createWindow = (
   let display = screen.getPrimaryDisplay();
   let widtho = display.bounds.width;
   let heighto = display.bounds.height;
-  let wind_height = 330;
-  let wind_width = 376;
-  let minusX = 608;
-  let minusY = 376;
+  let wind_height = 500;
+  let wind_width = 500;
+  let minusX = 0;
+  let minusY = 0;
 
   const restore = () => store.get(key, defaultSize);
 
@@ -86,7 +86,6 @@ export const createWindow = (
     ...options,
     resizable: false,
     useContentSize: true,
-    focusable: false,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -99,22 +98,24 @@ export const createWindow = (
   earlyX = widtho - minusX;
   earlyY = heighto - minusY;
 
-  win.setBounds({
-    width: win.getSize()[0],
-    height: win.getSize()[1],
-    x: earlyX,
-    y: earlyY,
-  });
+  // win.setBounds({
+  //   width: win.getSize()[0],
+  //   height: win.getSize()[1],
+  //   x: earlyX,
+  //   y: earlyY,
+  // });
 
-  win.setAspectRatio(16 / 9);
+  // win.setAspectRatio(16 / 9);
 
   ipcMain.handle("setnewpos", async (event, args: { x: number; y: number }) => {
+    console.log(win.getPosition());
     win.setBounds({
       width: wind_width || win.getSize()[0],
       height: wind_height,
       x: earlyX + args.x,
       y: earlyY + args.y,
     });
+    console.log(win.getPosition());
     newX = earlyX + args.x;
     newY = earlyY + args.y;
     if (wind_width === 0) {
