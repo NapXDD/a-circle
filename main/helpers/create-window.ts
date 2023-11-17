@@ -80,7 +80,7 @@ export const createWindow = (
     ...state,
     ...options,
     resizable: false,
-    // useContentSize: true,
+    useContentSize: true,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -90,12 +90,12 @@ export const createWindow = (
     transparent: true,
   });
 
-  win.setBounds({
-    width: win.getSize()[0],
-    height: win.getSize()[1],
-    x: state.x,
-    y: state.y,
-  });
+  // win.setBounds({
+  //   width: win.getSize()[0],
+  //   height: win.getSize()[1],
+  //   x: state.x,
+  //   y: state.y,
+  // });
 
   ipcMain.handle("setnewpos", async (event, args: { x: number; y: number }) => {
     win.setBounds({
