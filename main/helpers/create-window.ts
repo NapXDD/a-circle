@@ -7,9 +7,6 @@ import {
 } from "electron";
 import Store from "electron-store";
 
-let earlyX: number, earlyY: number;
-let newX: number, newY: number;
-
 export const createWindow = (
   windowName: string,
   options: BrowserWindowConstructorOptions
