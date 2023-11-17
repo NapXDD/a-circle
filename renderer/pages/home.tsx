@@ -1,6 +1,3 @@
-"use client";
-
-import React, { useEffect } from "react";
 import s from "../styles/clock.module.css";
 
 export default function Home() {
