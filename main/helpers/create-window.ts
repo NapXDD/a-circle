@@ -21,14 +21,12 @@ export const createWindow = (
     width: options.width,
     height: options.height,
   };
-  let state = {};
-  let display = screen.getPrimaryDisplay();
-  let widtho = display.bounds.width;
-  let heighto = display.bounds.height;
-  let wind_height = 500;
-  let wind_width = 500;
-  let minusX = 0;
-  let minusY = 0;
+  let state: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } = { x: 0, y: 0, width: 500, height: 500 };
 
   const restore = () => store.get(key, defaultSize);
 
@@ -85,7 +83,7 @@ export const createWindow = (
     ...state,
     ...options,
     resizable: false,
-    useContentSize: true,
+    // useContentSize: true,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -95,57 +93,35 @@ export const createWindow = (
     transparent: true,
   });
 
-  earlyX = widtho - minusX;
-  earlyY = heighto - minusY;
-
-  // win.setBounds({
-  //   width: win.getSize()[0],
-  //   height: win.getSize()[1],
-  //   x: earlyX,
-  //   y: earlyY,
-  // });
-
-  // win.setAspectRatio(16 / 9);
+  win.setBounds({
+    width: win.getSize()[0],
+    height: win.getSize()[1],
+    x: state.x,
+    y: state.y,
+  });
 
   ipcMain.handle("setnewpos", async (event, args: { x: number; y: number }) => {
-    console.log(win.getPosition());
     win.setBounds({
-      width: wind_width || win.getSize()[0],
-      height: wind_height,
-      x: earlyX + args.x,
-      y: earlyY + args.y,
+      x: state.x + args.x,
+      y: state.y + args.y,
     });
-    console.log(win.getPosition());
-    newX = earlyX + args.x;
-    newY = earlyY + args.y;
-    if (wind_width === 0) {
-      wind_width = Math.ceil((wind_height * 16) / 9);
-    }
   });
 
   ipcMain.handle(
     "settlenewpos",
     async (event, args: { x: number; y: number }) => {
-      earlyX += earlyX + args.x;
-      earlyY += earlyY + args.y;
-      newX = earlyX;
-      newY = earlyY;
+      state.x += args.x;
+      state.y += args.y;
     }
   );
 
-  ipcMain.on("settlemergency", () => {
-    earlyX = newX;
-    earlyY = newY;
-  });
-
-  win.on("will-resize", (event, newBounds) => {
-    earlyX = newBounds.x;
-    earlyY = newBounds.y;
-    newX = earlyX;
-    newY = earlyY;
-    wind_height = newBounds.height;
-    wind_width = newBounds.width;
-  });
+  ipcMain.on(
+    "settlemergency",
+    async (event, args: { x: number; y: number }) => {
+      state.x += args.x;
+      state.y += args.y;
+    }
+  );
 
   win.on("close", saveState);
 

@@ -29,10 +29,13 @@ export default function Home() {
     });
     clockContainer.addEventListener("mousemove", dragMouse);
 
-    clockContainer.addEventListener("mouseleave", () => {
+    clockContainer.addEventListener("mouseleave", (event: MouseEvent) => {
       if (is_mousedownvid) {
         is_mousedownvid = false;
-        window.ipc.sendv2("settlemergency");
+        window.ipc.send("settlemergency", {
+          x: event.screenX - earlymouseX,
+          y: event.screenY - earlymouseY,
+        });
       }
     });
 
